@@ -1,6 +1,6 @@
 package org.example;
 
-public class LinkedList<L> { // class LinkedList that can store elements of type L
+public class MLinkedList<L> { // class MLinkedList that can store elements of type L
     public Node<L> head = null; // declares head of the list pointing to first node
     //private int size; // the number of elements in the linked list
 
