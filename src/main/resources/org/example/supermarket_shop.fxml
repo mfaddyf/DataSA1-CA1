@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+
+<?import java.lang.String?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.supermarketShop">
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="Save"/>
+                    <MenuItem text="Load"/>
+                    <MenuItem text="Delete"/>
+                    <MenuItem text="Reset"/>
+                </Menu>
+            </MenuBar>
+            <Label text="Supermarket Management System" style="-fx-font-size: 24px;">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </Label>
+        </VBox>
+    </top>
+
+    <center>
+        <TabPane>
+            <Tab text="Floor Areas">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <TextField fx:id="floorTitleField" promptText="Floor Title" />
+                    <TextField fx:id="floorLevelField" promptText="Floor Level" />
+                    <Button text="Add Floor Area"/>
+                    <ListView fx:id="floorAreaList" />
+                </VBox>
+            </Tab>
+            <Tab text="Aisles">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <ComboBox fx:id="floorAreaSelector" promptText="Select Floor Area"/>
+                    <TextField fx:id="aisleNameField" promptText="Aisle Name" />
+                    <TextField fx:id="aisleLengthField" promptText="Length" />
+                    <TextField fx:id="aisleWidthField" promptText="Width" />
+                    <ComboBox fx:id="aisleTempCombo">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Unrefrigerated" />
+                                <String fx:value="Refrigerated" />
+                                <String fx:value="Frozen" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Button text="Add Aisle"/>
+                    <ListView fx:id="aisleList" />
+                </VBox>
+            </Tab>
+            <Tab text="Shelves">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <ComboBox fx:id="aisleSelector" promptText="Select Aisle"/>
+                    <TextField fx:id="shelfNumberField" promptText="Shelf Number" />
+                    <Button text="Add Shelf"/>
+                    <ListView fx:id="shelfList" />
+                </VBox>
+            </Tab>
+            <Tab text="Goods">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <ComboBox fx:id="shelfSelector" promptText="Select Shelf"/>
+                    <TextField fx:id="goodDescField" promptText="Description" />
+                    <TextField fx:id="goodSizeField" promptText="Size/Weight" />
+                    <TextField fx:id="goodPriceField" promptText="Unit Price" />
+                    <TextField fx:id="goodQtyField" promptText="Quantity" />
+                    <TextField fx:id="goodPhotoField" promptText="Photo URL" />
+                    <ComboBox fx:id="goodTempCombo">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Unrefrigerated" />
+                                <String fx:value="Refrigerated" />
+                                <String fx:value="Frozen" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Button text="Add Good Item"/>
+                    <ListView fx:id="goodItemList" />
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>
