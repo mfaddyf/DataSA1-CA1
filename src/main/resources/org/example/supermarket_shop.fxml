@@ -6,7 +6,7 @@
 <?import javafx.collections.FXCollections?>
 
 <?import java.lang.String?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.supermarketShop">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.SupermarketController">
     <top>
         <VBox>
             <MenuBar>
@@ -27,18 +27,18 @@
 
     <center>
         <TabPane>
-            <Tab text="Floor Areas">
+            <Tab text="Floor Areas" closable="false">
                 <VBox spacing="10">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <TextField fx:id="floorTitleField" promptText="Floor Title" />
                     <TextField fx:id="floorLevelField" promptText="Floor Level" />
-                    <Button text="Add Floor Area"/>
+                    <Button text="Add Floor Area" onAction="#handleAddFloorArea"/>
                     <ListView fx:id="floorAreaList" />
                 </VBox>
             </Tab>
-            <Tab text="Aisles">
+            <Tab text="Aisles" closable="false">
                 <VBox spacing="10">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -56,22 +56,22 @@
                             </FXCollections>
                         </items>
                     </ComboBox>
-                    <Button text="Add Aisle"/>
+                    <Button text="Add Aisle" onAction="#handleAddAisle"/>
                     <ListView fx:id="aisleList" />
                 </VBox>
             </Tab>
-            <Tab text="Shelves">
+            <Tab text="Shelves" closable="false">
                 <VBox spacing="10">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <ComboBox fx:id="aisleSelector" promptText="Select Aisle"/>
                     <TextField fx:id="shelfNumberField" promptText="Shelf Number" />
-                    <Button text="Add Shelf"/>
+                    <Button text="Add Shelf" onAction="#handleAddShelf"/>
                     <ListView fx:id="shelfList" />
                 </VBox>
             </Tab>
-            <Tab text="Goods">
+            <Tab text="Goods" closable="false">
                 <VBox spacing="10">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -91,10 +91,20 @@
                             </FXCollections>
                         </items>
                     </ComboBox>
-                    <Button text="Add Good Item"/>
+                    <Button text="Add Good Item" onAction="#handleAddGoodItem"/>
                     <ListView fx:id="goodItemList" />
                 </VBox>
             </Tab>
+            <Tab text="Stock Overview" closable="false">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <Button text="View All Stock" onAction="#handleViewAllStock"/>
+                    <TextArea fx:id="stockOverviewArea" prefRowCount="20" wrapText="true"/>
+                </VBox>
+            </Tab>
+
         </TabPane>
     </center>
 </BorderPane>

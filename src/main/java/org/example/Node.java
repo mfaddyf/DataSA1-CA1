@@ -3,7 +3,7 @@ package org.example;
 public class Node<E> {
 
     public Node<E> next = null;
-    private E data;
+    public E data;
 
     public Node(E data) {
         this.data = data;

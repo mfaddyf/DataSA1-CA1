@@ -26,4 +26,59 @@ public class MLinkedList<L> { // class MLinkedList that can store elements of ty
     public void clear() { // empty list
         head = null;
     }
+
+    public int size() {
+        int count = 0;
+        Node<L> current = head;
+        while (current != null) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+
+    public L get(int index) {
+        int count = 0;
+        Node<L> current = head;
+        while (current != null) {
+            if (count == index) {
+                return current.data;
+            }
+            count++;
+            current = current.next;
+        }
+        return null; // index not valid
+    }
+
+    public L find(Object o) {
+        Node<L> current = head;
+        while (current != null) {
+            if (current.data.equals(o)) {
+                return current.data;
+            }
+            current = current.next;
+        }
+        return null; // Not found
+    }
+
+    public boolean remove(L data) {
+        if (head == null) return false;
+
+        if (head.data.equals(data)) {
+            head = head.next;
+            return true;
+        }
+
+        Node<L> current = head;
+        while (current.next != null) {
+            if (current.next.data.equals(data)) {
+                current.next = current.next.next;
+                return true;
+            }
+            current = current.next;
+        }
+        return false; // Not found
+    }
+
+
 }
