@@ -1,6 +1,8 @@
 package org.example;
 
-public class ShelfReference {
+import java.io.Serializable;
+
+public class ShelfReference implements Serializable {
     private String aisleName;
     private int shelfNumber;
 

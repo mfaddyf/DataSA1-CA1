@@ -1,6 +1,8 @@
 package org.example;
 
-public class GoodItem {
+import java.io.Serializable;
+
+public class GoodItem implements Serializable {
 
     private String description;
     private String weight;
@@ -17,6 +19,7 @@ public class GoodItem {
         this.temperature = temperature;
         this.photoUrl = photoUrl;
     }
+
 
     /// TO DO
     /// ADD GETTERS , SETTERS , ETC

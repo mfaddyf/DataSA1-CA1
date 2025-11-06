@@ -167,5 +167,83 @@ public class SupermarketController {
         return null;
     }
 
+    @FXML
+    public void handleSaveSupermarket() {
+        supermarket.saveToFile("supermarket.dat");
+    }
+
+    @FXML
+    public void handleLoadSupermarket() {
+        supermarket = Supermarket.loadFromFile("supermarket.dat");
+        refreshAllViews();
+    }
+
+    public void refreshAllViews() {
+        // Clear all GUI lists and selectors
+        floorAreaList.getItems().clear();
+        floorAreaSelector.getItems().clear();
+        aisleList.getItems().clear();
+        aisleSelector.getItems().clear();
+        shelfList.getItems().clear();
+        shelfSelector.getItems().clear();
+        goodItemList.getItems().clear();
+
+        // Rebuild from supermarket data
+        for (int i = 0; i < supermarket.getFloorAreas().size(); i++) {
+            FloorArea fa = supermarket.getFloorAreas().get(i);
+            floorAreaList.getItems().add(fa.getFloorTitle() + " (" + fa.getFloorLevel() + ")");
+            floorAreaSelector.getItems().add(fa.getFloorTitle());
+
+            for (int j = 0; j < fa.getAisles().size(); j++) {
+                Aisle aisle = fa.getAisles().get(j);
+                aisleList.getItems().add(aisle.getAisleName() + " [" + aisle.getAisleTemperature() + "]");
+                aisleSelector.getItems().add(aisle.getAisleName());
+
+                for (int k = 0; k < aisle.getShelves().size(); k++) {
+                    Shelf shelf = aisle.getShelves().get(k);
+                    ShelfReference ref = new ShelfReference(aisle.getAisleName(), shelf.getShelfNumber());
+                    shelfList.getItems().add(ref.toString());
+                    shelfSelector.getItems().add(ref);
+
+                    for (int l = 0; l < shelf.getGoodItems().size(); l++) {
+                        GoodItem item = shelf.getGoodItems().get(l);
+                        goodItemList.getItems().add(item.getDescription() + " x" + item.getQuantity() + " @ €" + item.getUnitPrice());
+                    }
+                }
+            }
+        }
+
+        // refresh stock overview
+        stockOverviewArea.setText(supermarket.viewAllStockBreakdown());
+    }
+
+    @FXML
+    public void handleSmartAddGoodItem() {
+        String desc = goodDescField.getText();
+        String size = goodSizeField.getText();
+        String priceText = goodPriceField.getText();
+        String qtyText = goodQtyField.getText();
+        String photo = goodPhotoField.getText();
+        String temp = goodTempCombo.getValue();
+
+        if (desc != null && size != null && priceText != null && qtyText != null && temp != null) {
+            try {
+                double price = Double.parseDouble(priceText);
+                int qty = Integer.parseInt(qtyText);
+                GoodItem item = new GoodItem(desc, size, price, qty, temp, photo);
+
+                supermarket.smartAdd(item);
+
+                refreshAllViews();
+                goodDescField.clear();
+                goodSizeField.clear();
+                goodPriceField.clear();
+                goodQtyField.clear();
+                goodPhotoField.clear();
+                goodTempCombo.getSelectionModel().clearSelection();
+            } catch (NumberFormatException e) {
+            }
+        }
+    }
 
 }

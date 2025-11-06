@@ -1,6 +1,8 @@
 package org.example;
 
-public class Aisle {
+import java.io.Serializable;
+
+public class Aisle implements Serializable {
 
     private String aisleName;
     private String aisleDimension;

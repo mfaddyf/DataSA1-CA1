@@ -11,8 +11,8 @@
         <VBox>
             <MenuBar>
                 <Menu text="File">
-                    <MenuItem text="Save"/>
-                    <MenuItem text="Load"/>
+                    <MenuItem text="Save" onAction="#handleSaveSupermarket"/>
+                    <MenuItem text="Load" onAction="#handleLoadSupermarket"/>
                     <MenuItem text="Delete"/>
                     <MenuItem text="Reset"/>
                 </Menu>
@@ -92,6 +92,7 @@
                         </items>
                     </ComboBox>
                     <Button text="Add Good Item" onAction="#handleAddGoodItem"/>
+                    <Button text="Smart Add Good Item" onAction="#handleSmartAddGoodItem" />
                     <ListView fx:id="goodItemList" />
                 </VBox>
             </Tab>

@@ -22,7 +22,7 @@ public class Supermarket implements Serializable {
         this.floorAreas = floorAreas;
     }
 
-    // Check if an aisle name is unique across all floor areas
+    // check if an aisle name is unique across all floor areas
     public boolean isAisleNameUnique(String aisleName) {
         for (int i = 0; i < floorAreas.size(); i++) {
             FloorArea fa = floorAreas.get(i);
@@ -33,7 +33,7 @@ public class Supermarket implements Serializable {
         return true;
     }
 
-    // Search for a GoodItem by description across all shelves
+    // search for a GoodItem by description across all shelves
     public GoodItem searchGoodItem(String description) {
         for (int i = 0; i < floorAreas.size(); i++) {
             FloorArea fa = floorAreas.get(i);
@@ -53,7 +53,7 @@ public class Supermarket implements Serializable {
         return null;
     }
 
-    // Smart add: merge if match, else place in best aisle by temperature
+    // smart add: merge if match, else place in best aisle by temperature
     public void smartAdd(GoodItem newItem) {
         for (int i = 0; i < floorAreas.size(); i++) {
             FloorArea fa = floorAreas.get(i);
@@ -75,7 +75,7 @@ public class Supermarket implements Serializable {
             }
         }
 
-        // No match found — place in first aisle with matching temperature
+        // no match found — place in first aisle with matching temperature
         for (int i = 0; i < floorAreas.size(); i++) {
             FloorArea fa = floorAreas.get(i);
             for (int j = 0; j < fa.getAisles().size(); j++) {
@@ -119,6 +119,7 @@ public class Supermarket implements Serializable {
         }
     }
 
+
     public String viewAllStockBreakdown() {
         String output = "";
         double supermarketTotal = 0.0;
@@ -131,6 +132,7 @@ public class Supermarket implements Serializable {
             output = output + "Floor Area '" + fa.getFloorTitle() + "': " +
                     fa.getAisles().size() + " Aisles, Total Value €" +
                     String.format("%.2f", floorTotal) + "\n";
+            // "%.2f" formats the floor total to 2 decimal places.
 
             for (int j = 0; j < fa.getAisles().size(); j++) {
                 Aisle aisle = fa.getAisles().get(j);

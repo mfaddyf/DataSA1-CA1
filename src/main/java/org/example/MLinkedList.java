@@ -1,6 +1,8 @@
 package org.example;
 
-public class MLinkedList<L> { // class MLinkedList that can store elements of type L
+import java.io.Serializable;
+
+public class MLinkedList<L> implements Serializable { // class MLinkedList that can store elements of type L
     public Node<L> head = null; // declares head of the list pointing to first node
     //private int size; // the number of elements in the linked list
 

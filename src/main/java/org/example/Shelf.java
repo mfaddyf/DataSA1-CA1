@@ -1,6 +1,8 @@
 package org.example;
 
-public class Shelf {
+import java.io.Serializable;
+
+public class Shelf implements Serializable {
 
     private int shelfNumber;
     private MLinkedList<GoodItem> goodItems;

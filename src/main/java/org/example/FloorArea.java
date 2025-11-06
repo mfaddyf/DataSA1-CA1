@@ -1,6 +1,8 @@
 package org.example;
 
-public class FloorArea {
+import java.io.Serializable;
+
+public class FloorArea implements Serializable {
 
     private String floorTitle; // title the items hold like fruit and veg, dairy, etc
     private String floorLevel;
