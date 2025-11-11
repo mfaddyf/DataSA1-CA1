@@ -5,13 +5,19 @@ import java.io.Serializable;
 public class Aisle implements Serializable {
 
     private String aisleName;
-    private String aisleDimension;
+    private int width;
+    private int length;
+    private int x;
+    private int y;
     private String aisleTemperature;
     private MLinkedList<Shelf> shelves;
 
-    public Aisle(String aisleName, String aisleDimension, String aisleTemperature) {
+    public Aisle(String aisleName, int width, int length, int x, int y, String aisleTemperature) {
         this.aisleName = aisleName;
-        this.aisleDimension = aisleDimension;
+        this.width = width;
+        this.length = length;
+        this.x = x;
+        this.y = y;
         this.aisleTemperature = aisleTemperature;
         this.shelves = new MLinkedList<>();
     }
@@ -27,8 +33,20 @@ public class Aisle implements Serializable {
         return aisleName;
     }
 
-    public String getAisleDimension() {
-        return aisleDimension;
+    public int getWidth() {
+        return width;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public String getAisleTemperature() {
@@ -47,8 +65,20 @@ public class Aisle implements Serializable {
         this.aisleName = aisleName;
     }
 
-    public void setAisleDimension(String aisleDimension) {
-        this.aisleDimension = aisleDimension;
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public void setAisleTemperature(String aisleTemperature) {

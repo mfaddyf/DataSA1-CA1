@@ -23,3 +23,12 @@ public class SupermarketShop extends Application {
             launch();
         }
 }
+
+// TO DO
+// work on limits for example you can add multiple shelves of the same number to an aisle... pain up the arse but
+// search for good items
+// remove good items
+// reset facility
+
+// REFERENCES FOR WEBSITES I LOOKED AT TO SOLVE PROBLEMS
+//  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt

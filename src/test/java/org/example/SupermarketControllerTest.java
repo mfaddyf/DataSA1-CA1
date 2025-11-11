@@ -1,5 +1,7 @@
 package org.example;
 
+// mainly just tests for smart add + saving/loading files
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +15,7 @@ class SupermarketControllerTest {
         Shelf shelf = new Shelf(1);
         shelf.addGoodItem(original);
 
-        Aisle aisle = new Aisle("A1", "3.4", "Unrefrigerated");
+        Aisle aisle = new Aisle("A1", 2, 3,100,50, "Unrefrigerated");
         aisle.addShelf(shelf);
 
         FloorArea floor = new FloorArea("Main", "Ground");
@@ -34,7 +36,7 @@ class SupermarketControllerTest {
     public void testSmartAddPlacesInMatchingTemperatureAisle() {
         Supermarket market = new Supermarket();
 
-        Aisle aisle = new Aisle("FrozenAisle", "4", "Frozen");
+        Aisle aisle = new Aisle("FrozenAisle", 2, 3, 100,50,"Frozen");
         FloorArea floor = new FloorArea("ColdStorage", "Basement");
         floor.addAisle(aisle);
         market.addFloorArea(floor);
@@ -51,7 +53,7 @@ class SupermarketControllerTest {
     public void testSmartAddCreatesShelfIfNoneExist() {
         Supermarket market = new Supermarket();
 
-        Aisle aisle = new Aisle("FrozenAisle", "4", "Frozen");
+        Aisle aisle = new Aisle("FrozenAisle", 2, 3, 100,50,"Frozen");
         FloorArea floor = new FloorArea("ColdStorage", "Basement");
         floor.addAisle(aisle);
         market.addFloorArea(floor);
@@ -70,7 +72,7 @@ class SupermarketControllerTest {
         Supermarket market = new Supermarket();
 
         FloorArea floor = new FloorArea("Dry", "Ground");
-        floor.addAisle(new Aisle("DryAisle","4", "Unrefrigerated"));
+        floor.addAisle(new Aisle("DryAisle",2, 3, 100,50,"Unrefrigerated"));
         market.addFloorArea(floor);
 
         GoodItem yogurt = new GoodItem("Yogurt", "200g", 1.99, 5, "Refrigerated", "yogurt.jpg");
@@ -107,7 +109,7 @@ class SupermarketControllerTest {
         Supermarket original = new Supermarket();
 
         FloorArea floor = new FloorArea("Main Floor", "Ground");
-        Aisle aisle = new Aisle("Frozen Aisle", "5", "Frozen");
+        Aisle aisle = new Aisle("Frozen Aisle", 2, 3, 100,50,"Frozen");
         Shelf shelf = new Shelf(1);
         GoodItem item = new GoodItem("Fish Fingers", "500g", 4.99, 10, "Frozen", "fish.jpg");
 

@@ -3,18 +3,25 @@ package org.example;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
 
 public class SupermarketController {
 
     private Supermarket supermarket = new Supermarket();
 
-    // Floor Area tab
+    // floor area tab
     @FXML private TextField floorTitleField;
     @FXML private TextField floorLevelField;
     @FXML private ListView<String> floorAreaList;
     @FXML private ComboBox<String> floorAreaSelector;
 
-    // Aisle tab
+    // aisle tab
     @FXML private TextField aisleNameField;
     @FXML private TextField aisleLengthField;
     @FXML private TextField aisleWidthField;
@@ -22,12 +29,12 @@ public class SupermarketController {
     @FXML private ListView<String> aisleList;
     @FXML private ComboBox<String> aisleSelector;
 
-    // Shelf tab
+    // shelf tab
     @FXML private TextField shelfNumberField;
     @FXML private ListView<String> shelfList;
     @FXML private ComboBox<ShelfReference> shelfSelector;
 
-    // Goods tab
+    // goods tab
     @FXML private TextField goodDescField;
     @FXML private TextField goodSizeField;
     @FXML private TextField goodPriceField;
@@ -38,7 +45,7 @@ public class SupermarketController {
 
     @FXML private TextArea stockOverviewArea;
 
-    // Called automatically after FXML is loaded
+    // called automatically after FXML is loaded
     @FXML
     public void initialize() {
         aisleTempCombo.setItems(FXCollections.observableArrayList("Unrefrigerated", "Refrigerated", "Frozen"));
@@ -63,20 +70,35 @@ public class SupermarketController {
     public void handleAddAisle() {
         String selectedFloor = floorAreaSelector.getValue();
         String name = aisleNameField.getText();
-        String length = aisleLengthField.getText();
-        String width = aisleWidthField.getText();
+        String lengthText = aisleLengthField.getText();
+        String widthText = aisleWidthField.getText();
         String temp = aisleTempCombo.getValue();
 
-        if (selectedFloor != null && name != null && temp != null) {
-            FloorArea fa = findFloorAreaByTitle(selectedFloor);
-            if (fa != null) {
-                Aisle aisle = new Aisle(name, length + "x" + width, temp);
-                fa.addAisle(aisle);
-                aisleList.getItems().add(name + " [" + temp + "]");
-                aisleSelector.getItems().add(name);
-                aisleNameField.clear();
-                aisleLengthField.clear();
-                aisleWidthField.clear();
+        if (selectedFloor != null && name != null && !name.isEmpty()
+                && temp != null && !lengthText.isEmpty() && !widthText.isEmpty()) {
+
+            if (lengthText.matches("\\d+") && widthText.matches("\\d+")) {
+                int heightVal = Integer.parseInt(lengthText); // aisle "length" → height
+                int widthVal = Integer.parseInt(widthText);
+
+                FloorArea fa = findFloorAreaByTitle(selectedFloor);
+                if (fa != null) {
+                    // stagger aisles horizontally so they don’t overlap
+                    int index = fa.getAisles().size();
+                    int xVal = 50 + (index * 50);
+                    int yVal = 100;
+
+                    Aisle aisle = new Aisle(name, widthVal, heightVal, xVal, yVal, temp);
+                    fa.addAisle(aisle);
+
+                    aisleList.getItems().add(name + " [" + temp + "]");
+                    aisleSelector.getItems().add(name);
+
+                    aisleNameField.clear();
+                    aisleLengthField.clear();
+                    aisleWidthField.clear();
+                    aisleTempCombo.getSelectionModel().clearSelection();
+                }
             }
         }
     }
@@ -100,7 +122,6 @@ public class SupermarketController {
             }
         }
     }
-
 
     @FXML
     public void handleAddGoodItem() {
@@ -245,5 +266,76 @@ public class SupermarketController {
             }
         }
     }
+
+    @FXML
+    public void handleShowMap() {
+        Stage mapStage = new Stage();
+        mapStage.setTitle("Supermarket Map");
+
+        Pane mapPane = new Pane();
+        mapPane.setPrefSize(600, 400);
+
+        // Draw layout
+        for (int i = 0; i < supermarket.getFloorAreas().size(); i++) {
+            FloorArea fa = supermarket.getFloorAreas().get(i);
+
+            for (int j = 0; j < fa.getAisles().size(); j++) {
+                Aisle aisle = fa.getAisles().get(j);
+
+                // troubleshooting numbers for width height x y DO NOT FORGET TO REMOVE!!!
+                System.out.println("Drawing aisle: " + aisle.getAisleName() +
+                        " at (" + aisle.getX() + ", " + aisle.getY() + ") size: " +
+                        aisle.getWidth() + "x" + aisle.getLength());
+                // troubleshooting numbers for width height x y DO NOT FORGET TO REMOVE!!!
+
+                Rectangle aisleRect = new Rectangle(aisle.getX(), aisle.getY(), aisle.getWidth(), aisle.getLength());
+                aisleRect.setFill(Color.LIGHTBLUE);
+                aisleRect.setStroke(Color.BLACK);
+
+                Label aisleLabel = new Label(aisle.getAisleName());
+                aisleLabel.setLayoutX(aisle.getX());
+                aisleLabel.setLayoutY(aisle.getY() - 20);
+
+                aisleRect.setOnMouseClicked(e -> showShelves(aisle));
+
+                mapPane.getChildren().addAll(aisleRect, aisleLabel);
+            }
+        }
+
+        Scene scene = new Scene(mapPane);
+        mapStage.setScene(scene);
+        mapStage.show();
+    }
+
+    private void showShelves(Aisle aisle) {
+        Stage shelfStage = new Stage();
+        javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(8);
+        box.setPadding(new javafx.geometry.Insets(10));
+
+        for (int i = 0; i < aisle.getShelves().size(); i++) {
+            Shelf shelf = aisle.getShelves().get(i);
+            javafx.scene.control.Button b = new javafx.scene.control.Button("Shelf " + shelf.getShelfNumber());
+            b.setOnAction(e -> showItems(shelf));
+            box.getChildren().add(b);
+        }
+
+        shelfStage.setTitle("Shelves in " + aisle.getAisleName());
+        shelfStage.setScene(new Scene(box, 320, 240));
+        shelfStage.show();
+    }
+
+    private void showItems(Shelf shelf) {
+        javafx.scene.control.ListView<String> list = new javafx.scene.control.ListView<>();
+        for (int i = 0; i < shelf.getGoodItems().size(); i++) {
+            GoodItem g = shelf.getGoodItems().get(i);
+            list.getItems().add(g.getDescription() + " x" + g.getQuantity());
+        }
+        Stage s = new Stage();
+        s.setTitle("Items in shelf " + shelf.getShelfNumber());
+        s.setScene(new Scene(list, 320, 240));
+        s.show();
+    }
+
+
 
 }

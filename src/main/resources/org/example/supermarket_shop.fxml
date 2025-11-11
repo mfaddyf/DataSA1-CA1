@@ -16,6 +16,9 @@
                     <MenuItem text="Delete"/>
                     <MenuItem text="Reset"/>
                 </Menu>
+                <Menu text="View">
+                    <MenuItem text="Show Map" onAction="#handleShowMap"/>
+                </Menu>
             </MenuBar>
             <Label text="Supermarket Management System" style="-fx-font-size: 24px;">
                 <padding>
