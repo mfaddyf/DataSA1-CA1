@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class GoodItem implements Serializable {
 
+    // core details
     private String description;
     private String weight;
     private double unitPrice;
@@ -90,8 +91,9 @@ public class GoodItem implements Serializable {
         return this.description.equalsIgnoreCase(other.description) && this.weight.equalsIgnoreCase(other.weight);
     }
 
-    public String getSummary() {
-        return description + " (" + weight + ") x" + quantity + " @ €" + unitPrice;
+    @Override
+    public String toString() {
+        return description + " x" + quantity + " @ €" + unitPrice;
     }
 
 }

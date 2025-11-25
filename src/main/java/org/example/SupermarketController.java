@@ -41,9 +41,14 @@ public class SupermarketController {
     @FXML private TextField goodQtyField;
     @FXML private TextField goodPhotoField;
     @FXML private ComboBox<String> goodTempCombo;
-    @FXML private ListView<String> goodItemList;
+    @FXML private ListView<GoodItem> goodItemList;
 
     @FXML private TextArea stockOverviewArea;
+
+    @FXML private TextField searchField;
+    @FXML private TextArea searchResultsArea;
+
+    @FXML private TextField deleteQtyField;
 
     // called automatically after FXML is loaded
     @FXML
@@ -139,7 +144,7 @@ public class SupermarketController {
                 int qty = Integer.parseInt(qtyText);
                 GoodItem item = new GoodItem(desc, size, price, qty, temp, photo);
                 shelf.addGoodItem(item);
-                goodItemList.getItems().add(desc + " x" + qty + " @ €" + price);
+                goodItemList.getItems().add(item);
                 goodDescField.clear();
                 goodSizeField.clear();
                 goodPriceField.clear();
@@ -199,8 +204,14 @@ public class SupermarketController {
         refreshAllViews();
     }
 
+    @FXML
+    public void handleResetSupermarket() {
+        supermarket.reset();
+        refreshAllViews();
+    }
+
     public void refreshAllViews() {
-        // Clear all GUI lists and selectors
+        // clear all GUI lists and selectors
         floorAreaList.getItems().clear();
         floorAreaSelector.getItems().clear();
         aisleList.getItems().clear();
@@ -209,7 +220,7 @@ public class SupermarketController {
         shelfSelector.getItems().clear();
         goodItemList.getItems().clear();
 
-        // Rebuild from supermarket data
+        // rebuild from supermarket data
         for (int i = 0; i < supermarket.getFloorAreas().size(); i++) {
             FloorArea fa = supermarket.getFloorAreas().get(i);
             floorAreaList.getItems().add(fa.getFloorTitle() + " (" + fa.getFloorLevel() + ")");
@@ -228,7 +239,7 @@ public class SupermarketController {
 
                     for (int l = 0; l < shelf.getGoodItems().size(); l++) {
                         GoodItem item = shelf.getGoodItems().get(l);
-                        goodItemList.getItems().add(item.getDescription() + " x" + item.getQuantity() + " @ €" + item.getUnitPrice());
+                        goodItemList.getItems().add(item);
                     }
                 }
             }
@@ -273,28 +284,36 @@ public class SupermarketController {
         mapStage.setTitle("Supermarket Map");
 
         Pane mapPane = new Pane();
-        mapPane.setPrefSize(600, 400);
+        mapPane.setPrefSize(800, 600);
 
-        // Draw layout
         for (int i = 0; i < supermarket.getFloorAreas().size(); i++) {
             FloorArea fa = supermarket.getFloorAreas().get(i);
+
+            // add floor heading
+            Label floorLabel = new Label(fa.getFloorTitle() + " (" + fa.getFloorLevel() + ")");
+            floorLabel.setLayoutX(20);
+            floorLabel.setLayoutY(40 + (i * 200));
+            mapPane.getChildren().add(floorLabel);
+
+            int floorOffsetY = i * 200;
 
             for (int j = 0; j < fa.getAisles().size(); j++) {
                 Aisle aisle = fa.getAisles().get(j);
 
-                // troubleshooting numbers for width height x y DO NOT FORGET TO REMOVE!!!
                 System.out.println("Drawing aisle: " + aisle.getAisleName() +
-                        " at (" + aisle.getX() + ", " + aisle.getY() + ") size: " +
+                        " at (" + aisle.getX() + ", " + (aisle.getY() + floorOffsetY) + ") size: " +
                         aisle.getWidth() + "x" + aisle.getLength());
-                // troubleshooting numbers for width height x y DO NOT FORGET TO REMOVE!!!
 
-                Rectangle aisleRect = new Rectangle(aisle.getX(), aisle.getY(), aisle.getWidth(), aisle.getLength());
+                Rectangle aisleRect = new Rectangle(
+                        aisle.getX(), aisle.getY() + floorOffsetY,
+                        aisle.getWidth(), aisle.getLength()
+                );
                 aisleRect.setFill(Color.LIGHTBLUE);
                 aisleRect.setStroke(Color.BLACK);
 
                 Label aisleLabel = new Label(aisle.getAisleName());
                 aisleLabel.setLayoutX(aisle.getX());
-                aisleLabel.setLayoutY(aisle.getY() - 20);
+                aisleLabel.setLayoutY(aisle.getY() + floorOffsetY - 20);
 
                 aisleRect.setOnMouseClicked(e -> showShelves(aisle));
 
@@ -336,6 +355,53 @@ public class SupermarketController {
         s.show();
     }
 
+    @FXML
+    public void handleSearchGoodItem() {
+        String name = searchField.getText();
+        if (name != null && !name.isEmpty()) {
+            MLinkedList<SearchResult> results = supermarket.searchGoodItemByName(name);
+            StringBuilder sb = new StringBuilder();
+            Node<SearchResult> current = results.getHead();
+            while (current != null) {
+                sb.append(current.data.toString()).append("\n");
+                current = current.next;
+            }
+            searchResultsArea.setText(sb.toString());
+        }
+    }
 
+    @FXML
+    public void handleDeleteSelectedGoodItem() {
+        ShelfReference ref = shelfSelector.getValue();
+        GoodItem selectedItem = goodItemList.getSelectionModel().getSelectedItem();
+        String qtyText = deleteQtyField.getText();
+
+        if (ref != null && selectedItem != null && qtyText != null && !qtyText.isEmpty()) {
+            try {
+                int qty = Integer.parseInt(qtyText);
+                Shelf shelf = findShelfByReference(ref.getAisleName(), ref.getShelfNumber());
+                if (shelf != null) {
+                    shelf.removeGoodItem(selectedItem.getDescription(), qty);
+                    refreshAllViews();
+                    deleteQtyField.clear();
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid quantity entered.");
+            }
+        }
+    }
+
+
+    @FXML
+    public void handleDeleteAllGoodItems() {
+        ShelfReference ref = shelfSelector.getValue();
+        if (ref != null) {
+            Shelf shelf = findShelfByReference(ref.getAisleName(), ref.getShelfNumber());
+            if (shelf != null) {
+                shelf.getGoodItems().clear(); // clear linked list
+                refreshAllViews();
+            }
+        }
+    }
 
 }

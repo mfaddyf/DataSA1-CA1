@@ -14,7 +14,7 @@
                     <MenuItem text="Save" onAction="#handleSaveSupermarket"/>
                     <MenuItem text="Load" onAction="#handleLoadSupermarket"/>
                     <MenuItem text="Delete"/>
-                    <MenuItem text="Reset"/>
+                    <MenuItem text="Reset Supermarket" onAction="#handleResetSupermarket"/>
                 </Menu>
                 <Menu text="View">
                     <MenuItem text="Show Map" onAction="#handleShowMap"/>
@@ -96,6 +96,10 @@
                     </ComboBox>
                     <Button text="Add Good Item" onAction="#handleAddGoodItem"/>
                     <Button text="Smart Add Good Item" onAction="#handleSmartAddGoodItem" />
+                    <Separator />
+                    <TextField fx:id="deleteQtyField" promptText="Quantity to Delete"/>
+                    <Button text="Delete Selected Item" onAction="#handleDeleteSelectedGoodItem"/>
+                    <Button text="Delete All Items" onAction="#handleDeleteAllGoodItems"/>
                     <ListView fx:id="goodItemList" />
                 </VBox>
             </Tab>
@@ -106,6 +110,16 @@
                     </padding>
                     <Button text="View All Stock" onAction="#handleViewAllStock"/>
                     <TextArea fx:id="stockOverviewArea" prefRowCount="20" wrapText="true"/>
+                </VBox>
+            </Tab>
+            <Tab text="Search Items" closable="false">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <TextField fx:id="searchField" promptText="Enter item name"/>
+                    <Button text="Search" onAction="#handleSearchGoodItem"/>
+                    <TextArea fx:id="searchResultsArea" prefRowCount="15" wrapText="true"/>
                 </VBox>
             </Tab>
 

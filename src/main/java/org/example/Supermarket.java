@@ -22,32 +22,11 @@ public class Supermarket implements Serializable {
         this.floorAreas = floorAreas;
     }
 
-    // check if an aisle name is unique across all floor areas
-    public boolean isAisleNameUnique(String aisleName) {
+    public FloorArea getFloorAreaByTitle(String title) {
         for (int i = 0; i < floorAreas.size(); i++) {
             FloorArea fa = floorAreas.get(i);
-            if (fa.aisleNameExists(aisleName)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // search for a GoodItem by description across all shelves
-    public GoodItem searchGoodItem(String description) {
-        for (int i = 0; i < floorAreas.size(); i++) {
-            FloorArea fa = floorAreas.get(i);
-            for (int j = 0; j < fa.getAisles().size(); j++) {
-                Aisle aisle = fa.getAisles().get(j);
-                for (int k = 0; k < aisle.getShelves().size(); k++) {
-                    Shelf shelf = aisle.getShelves().get(k);
-                    for (int l = 0; l < shelf.getGoodItems().size(); l++) {
-                        GoodItem item = shelf.getGoodItems().get(l);
-                        if (item.getDescription().equalsIgnoreCase(description)) {
-                            return item;
-                        }
-                    }
-                }
+            if (fa.getFloorTitle().equalsIgnoreCase(title)) {
+                return fa;
             }
         }
         return null;
@@ -169,5 +148,31 @@ public class Supermarket implements Serializable {
 
         return output;
     }
+
+    public MLinkedList<SearchResult> searchGoodItemByName(String name) {
+        MLinkedList<SearchResult> results = new MLinkedList<>();
+
+        for (int i = 0; i < floorAreas.size(); i++) {
+            FloorArea fa = floorAreas.get(i);
+            for (int j = 0; j < fa.getAisles().size(); j++) {
+                Aisle aisle = fa.getAisles().get(j);
+                for (int k = 0; k < aisle.getShelves().size(); k++) {
+                    Shelf shelf = aisle.getShelves().get(k);
+                    for (int l = 0; l < shelf.getGoodItems().size(); l++) {
+                        GoodItem item = shelf.getGoodItems().get(l);
+                        if (item.getDescription().equalsIgnoreCase(name)) {
+                            results.addElement(new SearchResult(
+                                    fa.getFloorTitle(), fa.getFloorLevel(),
+                                    aisle.getAisleName(), shelf.getShelfNumber(),
+                                    item
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
 
 }

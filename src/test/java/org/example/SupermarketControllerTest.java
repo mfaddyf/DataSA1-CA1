@@ -105,7 +105,7 @@ class SupermarketControllerTest {
 
     @Test
     public void testSaveAndLoadSupermarket() {
-        // Create a supermarket and add a good item
+        // create a supermarket and add a good item
         Supermarket original = new Supermarket();
 
         FloorArea floor = new FloorArea("Main Floor", "Ground");

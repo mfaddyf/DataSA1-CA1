@@ -25,7 +25,7 @@ public class SupermarketShop extends Application {
 }
 
 // TO DO
-// work on limits for example you can add multiple shelves of the same number to an aisle... pain up the arse but
+// floors to the gui map..... omg how did i forget.....
 // search for good items
 // remove good items
 // reset facility

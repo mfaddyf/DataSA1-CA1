@@ -68,10 +68,6 @@ public class FloorArea implements Serializable {
         return null;
     }
 
-    public boolean aisleNameExists(String name) {
-        return findAisleByName(name) != null;
-    }
-
     public double getTotalValue() {
         double total = 0.0;
         for (int i = 0; i < aisles.size(); i++) {
@@ -79,4 +75,6 @@ public class FloorArea implements Serializable {
         }
         return total;
     }
+
+
 }
