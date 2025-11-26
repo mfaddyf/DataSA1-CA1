@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 public class GoodItem implements Serializable {
 
-    // core details
+    //---
+    // FIELDS
+    //---
+
     private String description;
     private String weight;
     private double unitPrice;
@@ -21,13 +24,10 @@ public class GoodItem implements Serializable {
         this.photoUrl = photoUrl;
     }
 
+    //---
+    //GETTERS
+    //---
 
-    /// TO DO
-    /// ADD GETTERS , SETTERS , ETC
-
-    //   --
-    //   GETTERS
-    //   --
     public String getDescription() {
         return description;
     }
@@ -52,9 +52,9 @@ public class GoodItem implements Serializable {
         return photoUrl;
     }
 
-    //   --
-    //   SETTERS
-    //   --
+    //---
+    //SETTERS
+    //---
 
     public void setDescription(String description) {
         this.description = description;
@@ -80,17 +80,32 @@ public class GoodItem implements Serializable {
         this.photoUrl = photoUrl;
     }
 
-    //   --
-    //   METHODS
-    //   --
+    //--
+    //METHODS
+    //---
+
+    /**
+     * calculates the total value of the item in stock
+     * @return unitPrice * quantity
+     */
     public double getTotalValue() {
         return unitPrice * quantity;
     }
 
+    /**
+     *
+     * @param other another GoodItem to compare against
+     * @return true if they equal, false if they don't
+     */
     public boolean matches(GoodItem other) {
         return this.description.equalsIgnoreCase(other.description) && this.weight.equalsIgnoreCase(other.weight);
     }
 
+
+    /**
+     * returns a string to represent the item
+     * @return example : "Brioche Loaf x4 @ €2.50"
+     */
     @Override
     public String toString() {
         return description + " x" + quantity + " @ €" + unitPrice;

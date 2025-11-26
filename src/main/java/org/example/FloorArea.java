@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 public class FloorArea implements Serializable {
 
-    private String floorTitle; // title the items hold like fruit and veg, dairy, etc
+    //---
+    //METHODS
+    //---
+
+    private String floorTitle;
     private String floorLevel;
     private MLinkedList<Aisle> aisles;
 
@@ -14,12 +18,9 @@ public class FloorArea implements Serializable {
         this.aisles = new MLinkedList<>();
     }
 
-    /// TO DO
-    /// ADD GETTERS , SETTERS , ADD AISLE , FIND AISLE , GET TOTAL VALUE , ETC
-
-    //   --
-    //   GETTERS
-    //   --
+    //---
+    //GETTERS
+    //---
 
     public String getFloorTitle() {
         return floorTitle;
@@ -34,9 +35,9 @@ public class FloorArea implements Serializable {
     }
 
 
-    //   --
-    //   SETTERS
-    //   --
+    //---
+    //SETTERS
+    //---
 
     public void setFloorTitle(String floorTitle) {
         this.floorTitle = floorTitle;
@@ -50,9 +51,9 @@ public class FloorArea implements Serializable {
         this.aisles = aisles;
     }
 
-    //   --
-    //   METHODS
-    //   --
+    //---
+    //METHODS
+    //---
 
     public void addAisle(Aisle aisle) {
         aisles.addElement(aisle);

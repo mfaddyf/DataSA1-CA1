@@ -4,20 +4,12 @@ import java.io.Serializable;
 
 public class Node<E> implements Serializable {
 
+    // ref to the next node, null if it is the final
     public Node<E> next = null;
     public E data;
 
     public Node(E data) {
-        this.data = data;
-        this.next = null;
+        this.data = data; // assigns given data
+        this.next = null; // at the beginning, no next node
     }
-
-    public E getContents() {
-        return data;
-    }
-
-    public void setData(E d) {
-        data=d;
-    }
-
 }

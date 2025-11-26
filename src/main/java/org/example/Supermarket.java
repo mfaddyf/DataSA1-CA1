@@ -173,6 +173,4 @@ public class Supermarket implements Serializable {
         }
         return results;
     }
-
-
 }

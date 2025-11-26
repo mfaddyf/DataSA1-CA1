@@ -13,14 +13,13 @@
                 <Menu text="File">
                     <MenuItem text="Save" onAction="#handleSaveSupermarket"/>
                     <MenuItem text="Load" onAction="#handleLoadSupermarket"/>
-                    <MenuItem text="Delete"/>
                     <MenuItem text="Reset Supermarket" onAction="#handleResetSupermarket"/>
                 </Menu>
                 <Menu text="View">
                     <MenuItem text="Show Map" onAction="#handleShowMap"/>
                 </Menu>
             </MenuBar>
-            <Label text="Supermarket Management System" style="-fx-font-size: 24px;">
+            <Label text="Supermarket Management System!" style="-fx-font-size: 24px;">
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10"/>
                 </padding>
@@ -36,7 +35,7 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <TextField fx:id="floorTitleField" promptText="Floor Title" />
-                    <TextField fx:id="floorLevelField" promptText="Floor Level" />
+                    <TextField fx:id="floorLevelField" promptText="Floor Level (Ground, 1st Floor, etc.)" />
                     <Button text="Add Floor Area" onAction="#handleAddFloorArea"/>
                     <ListView fx:id="floorAreaList" />
                 </VBox>
@@ -46,10 +45,10 @@
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
-                    <ComboBox fx:id="floorAreaSelector" promptText="Select Floor Area"/>
+                    <ComboBox fx:id="floorAreaSelector" promptText="Select Floor Area :"/>
                     <TextField fx:id="aisleNameField" promptText="Aisle Name" />
-                    <TextField fx:id="aisleLengthField" promptText="Length" />
-                    <TextField fx:id="aisleWidthField" promptText="Width" />
+                    <Spinner fx:id="aisleLengthSpinner" />
+                    <Spinner fx:id="aisleWidthSpinner" />
                     <ComboBox fx:id="aisleTempCombo">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
@@ -68,22 +67,22 @@
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
-                    <ComboBox fx:id="aisleSelector" promptText="Select Aisle"/>
-                    <TextField fx:id="shelfNumberField" promptText="Shelf Number" />
+                    <ComboBox fx:id="aisleSelector" promptText="Select Aisle :"/>
+                    <Spinner fx:id="shelfNumberSpinner" />
                     <Button text="Add Shelf" onAction="#handleAddShelf"/>
                     <ListView fx:id="shelfList" />
                 </VBox>
             </Tab>
-            <Tab text="Goods" closable="false">
+            <Tab text="Items" closable="false">
                 <VBox spacing="10">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
-                    <ComboBox fx:id="shelfSelector" promptText="Select Shelf"/>
+                    <ComboBox fx:id="shelfSelector" promptText="Select Shelf :"/>
                     <TextField fx:id="goodDescField" promptText="Description" />
-                    <TextField fx:id="goodSizeField" promptText="Size/Weight" />
-                    <TextField fx:id="goodPriceField" promptText="Unit Price" />
-                    <TextField fx:id="goodQtyField" promptText="Quantity" />
+                    <TextField fx:id="goodSizeField" promptText="Weight (g)" />
+                    <Spinner fx:id="goodPriceSpinner" />
+                    <Spinner fx:id="goodQtySpinner" />
                     <TextField fx:id="goodPhotoField" promptText="Photo URL" />
                     <ComboBox fx:id="goodTempCombo">
                         <items>
@@ -97,7 +96,7 @@
                     <Button text="Add Good Item" onAction="#handleAddGoodItem"/>
                     <Button text="Smart Add Good Item" onAction="#handleSmartAddGoodItem" />
                     <Separator />
-                    <TextField fx:id="deleteQtyField" promptText="Quantity to Delete"/>
+                    <Spinner fx:id="deleteQtySpinner" />
                     <Button text="Delete Selected Item" onAction="#handleDeleteSelectedGoodItem"/>
                     <Button text="Delete All Items" onAction="#handleDeleteAllGoodItems"/>
                     <ListView fx:id="goodItemList" />
@@ -122,7 +121,6 @@
                     <TextArea fx:id="searchResultsArea" prefRowCount="15" wrapText="true"/>
                 </VBox>
             </Tab>
-
         </TabPane>
     </center>
 </BorderPane>
