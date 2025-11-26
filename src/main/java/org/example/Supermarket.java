@@ -18,30 +18,20 @@ public class Supermarket implements Serializable {
         return floorAreas;
     }
 
-    public void setFloorAreas(MLinkedList<FloorArea> floorAreas) {
-        this.floorAreas = floorAreas;
-    }
-
-    public FloorArea getFloorAreaByTitle(String title) {
-        for (int i = 0; i < floorAreas.size(); i++) {
-            FloorArea fa = floorAreas.get(i);
-            if (fa.getFloorTitle().equalsIgnoreCase(title)) {
-                return fa;
-            }
-        }
-        return null;
-    }
-
     // smart add: merge if match, else place in best aisle by temperature
     public void smartAdd(GoodItem newItem) {
-        for (int i = 0; i < floorAreas.size(); i++) {
-            FloorArea fa = floorAreas.get(i);
-            for (int j = 0; j < fa.getAisles().size(); j++) {
-                Aisle aisle = fa.getAisles().get(j);
-                for (int k = 0; k < aisle.getShelves().size(); k++) {
-                    Shelf shelf = aisle.getShelves().get(k);
-                    for (int l = 0; l < shelf.getGoodItems().size(); l++) {
-                        GoodItem existing = shelf.getGoodItems().get(l);
+        Node<FloorArea> faNode = floorAreas.getHead();
+        while (faNode != null) {
+            FloorArea fa = faNode.data;
+            Node<Aisle> aisleNode = fa.getAisles().getHead();
+            while (aisleNode != null) {
+                Aisle aisle = aisleNode.data;
+                Node<Shelf> shelfNode = aisle.getShelves().getHead();
+                while (shelfNode != null) {
+                    Shelf shelf = shelfNode.data;
+                    Node<GoodItem> itemNode = shelf.getGoodItems().getHead();
+                    while (itemNode != null) {
+                        GoodItem existing = itemNode.data;
                         if (existing.getDescription().equalsIgnoreCase(newItem.getDescription()) &&
                                 existing.getWeight().equalsIgnoreCase(newItem.getWeight())) {
                             existing.setQuantity(existing.getQuantity() + newItem.getQuantity());
@@ -49,20 +39,26 @@ public class Supermarket implements Serializable {
                             existing.setPhotoUrl(newItem.getPhotoUrl());
                             return;
                         }
+                        itemNode = itemNode.next;
                     }
+                    shelfNode = shelfNode.next;
                 }
+                aisleNode = aisleNode.next;
             }
+            faNode = faNode.next;
         }
 
         // no match found — place in first aisle with matching temperature
-        for (int i = 0; i < floorAreas.size(); i++) {
-            FloorArea fa = floorAreas.get(i);
-            for (int j = 0; j < fa.getAisles().size(); j++) {
-                Aisle aisle = fa.getAisles().get(j);
+        faNode = floorAreas.getHead();
+        while (faNode != null) {
+            FloorArea fa = faNode.data;
+            Node<Aisle> aisleNode = fa.getAisles().getHead();
+            while (aisleNode != null) {
+                Aisle aisle = aisleNode.data;
                 if (aisle.getAisleTemperature().equalsIgnoreCase(newItem.getTemperature())) {
                     Shelf targetShelf;
-                    if (aisle.getShelves().size() > 0) {
-                        targetShelf = aisle.getShelves().get(0);
+                    if (aisle.getShelves().getHead() != null) {
+                        targetShelf = aisle.getShelves().getHead().data;
                     } else {
                         targetShelf = new Shelf(1);
                         aisle.addShelf(targetShelf);
@@ -70,9 +66,12 @@ public class Supermarket implements Serializable {
                     targetShelf.addGoodItem(newItem);
                     return;
                 }
+                aisleNode = aisleNode.next;
             }
+            faNode = faNode.next;
         }
     }
+
 
     // Reset all data
     public void reset() {
@@ -98,68 +97,109 @@ public class Supermarket implements Serializable {
         }
     }
 
-
     public String viewAllStockBreakdown() {
         String output = "";
         double supermarketTotal = 0.0;
 
-        for (int i = 0; i < floorAreas.size(); i++) {
-            FloorArea fa = floorAreas.get(i);
+        Node<FloorArea> faNode = floorAreas.getHead();
+        int floorCount = 0;
+        while (faNode != null) {
+            FloorArea fa = faNode.data;
             double floorTotal = fa.getTotalValue();
             supermarketTotal += floorTotal;
+            floorCount++;
 
-            output = output + "Floor Area '" + fa.getFloorTitle() + "': " +
-                    fa.getAisles().size() + " Aisles, Total Value €" +
-                    String.format("%.2f", floorTotal) + "\n";
-            // "%.2f" formats the floor total to 2 decimal places.
+            // count aisles
+            int aisleCount = 0;
+            Node<Aisle> aisleNode = fa.getAisles().getHead();
+            while (aisleNode != null) {
+                aisleCount++;
+                aisleNode = aisleNode.next;
+            }
 
-            for (int j = 0; j < fa.getAisles().size(); j++) {
-                Aisle aisle = fa.getAisles().get(j);
+            output = output + "Floor Area '" + fa.getFloorTitle() + "': "
+                    + aisleCount + " Aisles, Total Value €"
+                    + String.format("%.2f", floorTotal) + "\n";
+
+            aisleNode = fa.getAisles().getHead();
+            while (aisleNode != null) {
+                Aisle aisle = aisleNode.data;
                 double aisleTotal = aisle.getTotalValue();
 
-                output = output + "  Aisle '" + aisle.getAisleName() + "': " +
-                        aisle.getShelves().size() + " Shelves, Total Value €" +
-                        String.format("%.2f", aisleTotal) + "\n";
+                // count shelves
+                int shelfCount = 0;
+                Node<Shelf> shelfNode = aisle.getShelves().getHead();
+                while (shelfNode != null) {
+                    shelfCount++;
+                    shelfNode = shelfNode.next;
+                }
 
-                for (int k = 0; k < aisle.getShelves().size(); k++) {
-                    Shelf shelf = aisle.getShelves().get(k);
+                output = output + "  Aisle '" + aisle.getAisleName() + "': "
+                        + shelfCount + " Shelves, Total Value €"
+                        + String.format("%.2f", aisleTotal) + "\n";
+
+                shelfNode = aisle.getShelves().getHead();
+                while (shelfNode != null) {
+                    Shelf shelf = shelfNode.data;
                     double shelfTotal = shelf.getTotalValue();
 
-                    output = output + "    Shelf " + shelf.getShelfNumber() + ": " +
-                            shelf.getGoodItems().size() + " items, Total Value €" +
-                            String.format("%.2f", shelfTotal) + "\n";
+                    // count items
+                    int itemCount = 0;
+                    Node<GoodItem> itemNode = shelf.getGoodItems().getHead();
+                    while (itemNode != null) {
+                        itemCount++;
+                        itemNode = itemNode.next;
+                    }
 
-                    for (int l = 0; l < shelf.getGoodItems().size(); l++) {
-                        GoodItem item = shelf.getGoodItems().get(l);
+                    output = output + "    Shelf " + shelf.getShelfNumber() + ": "
+                            + itemCount + " items, Total Value €"
+                            + String.format("%.2f", shelfTotal) + "\n";
+
+                    itemNode = shelf.getGoodItems().getHead();
+                    while (itemNode != null) {
+                        GoodItem item = itemNode.data;
                         double itemTotal = item.getTotalValue();
 
-                        output = output + "      " + item.getDescription() + " (" +
-                                item.getWeight() + "): " + item.getQuantity() +
-                                " @ €" + String.format("%.2f", item.getUnitPrice()) +
-                                " = €" + String.format("%.2f", itemTotal) + "\n";
+                        output = output + "      " + item.getDescription()
+                                + " (" + item.getWeight() + "): "
+                                + item.getQuantity() + " @ €"
+                                + String.format("%.2f", item.getUnitPrice())
+                                + " = €" + String.format("%.2f", itemTotal)
+                                + "\n";
+
+                        itemNode = itemNode.next;
                     }
+                    shelfNode = shelfNode.next;
                 }
+                aisleNode = aisleNode.next;
             }
+            faNode = faNode.next;
         }
 
-        output = output + "\nSupermarket: " + floorAreas.size() +
-                " Floor Areas, Total Value €" +
-                String.format("%.2f", supermarketTotal) + "\n";
+        output = output + "\nSupermarket: " + floorCount
+                + " Floor Areas, Total Value €"
+                + String.format("%.2f", supermarketTotal) + "\n";
 
         return output;
     }
 
+
+
     public MLinkedList<SearchResult> searchGoodItemByName(String name) {
         MLinkedList<SearchResult> results = new MLinkedList<>();
 
-        for (int i = 0; i < floorAreas.size(); i++) {
-            FloorArea fa = floorAreas.get(i);
-            for (int j = 0; j < fa.getAisles().size(); j++) {
-                Aisle aisle = fa.getAisles().get(j);
-                for (int k = 0; k < aisle.getShelves().size(); k++) {
-                    Shelf shelf = aisle.getShelves().get(k);
-                    for (int l = 0; l < shelf.getGoodItems().size(); l++) {
-                        GoodItem item = shelf.getGoodItems().get(l);
+        Node<FloorArea> faNode = floorAreas.getHead();
+        while (faNode != null) {
+            FloorArea fa = faNode.data;
+            Node<Aisle> aisleNode = fa.getAisles().getHead();
+            while (aisleNode != null) {
+                Aisle aisle = aisleNode.data;
+                Node<Shelf> shelfNode = aisle.getShelves().getHead();
+                while (shelfNode != null) {
+                    Shelf shelf = shelfNode.data;
+                    Node<GoodItem> itemNode = shelf.getGoodItems().getHead();
+                    while (itemNode != null) {
+                        GoodItem item = itemNode.data;
                         if (item.getDescription().equalsIgnoreCase(name)) {
                             results.addElement(new SearchResult(
                                     fa.getFloorTitle(), fa.getFloorLevel(),
@@ -167,10 +207,15 @@ public class Supermarket implements Serializable {
                                     item
                             ));
                         }
+                        itemNode = itemNode.next;
                     }
+                    shelfNode = shelfNode.next;
                 }
+                aisleNode = aisleNode.next;
             }
+            faNode = faNode.next;
         }
         return results;
     }
+
 }
