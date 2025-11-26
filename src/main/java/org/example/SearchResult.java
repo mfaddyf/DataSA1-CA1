@@ -2,6 +2,14 @@ package org.example;
 
 import java.io.Serializable;
 
+/*
+        this class is used to format the output of the text when
+    searching for good items by name
+        it bundles together all the details and returns it all, if good item
+    was just returned, it wouldn't tell you any of the location information
+    to do with the item
+ */
+
 public class SearchResult implements Serializable {
     private String floorTitle;
     private String floorLevel;

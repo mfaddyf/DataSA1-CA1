@@ -47,8 +47,14 @@
                     </padding>
                     <ComboBox fx:id="floorAreaSelector" promptText="Select Floor Area :"/>
                     <TextField fx:id="aisleNameField" promptText="Aisle Name" />
-                    <Spinner fx:id="aisleLengthSpinner" />
-                    <Spinner fx:id="aisleWidthSpinner" />
+                        <HBox spacing="10">
+                            <Label text="Length: " />
+                            <Spinner fx:id="aisleLengthSpinner" />
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Width: " />
+                            <Spinner fx:id="aisleWidthSpinner" />
+                        </HBox>
                     <ComboBox fx:id="aisleTempCombo">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
@@ -68,7 +74,10 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <ComboBox fx:id="aisleSelector" promptText="Select Aisle :"/>
-                    <Spinner fx:id="shelfNumberSpinner" />
+                        <HBox spacing="10">
+                            <Label text="Shelf Number: " />
+                            <Spinner fx:id="shelfNumberSpinner" />
+                        </HBox>
                     <Button text="Add Shelf" onAction="#handleAddShelf"/>
                     <ListView fx:id="shelfList" />
                 </VBox>
@@ -80,9 +89,15 @@
                     </padding>
                     <ComboBox fx:id="shelfSelector" promptText="Select Shelf :"/>
                     <TextField fx:id="goodDescField" promptText="Description" />
-                    <TextField fx:id="goodSizeField" promptText="Weight (g)" />
-                    <Spinner fx:id="goodPriceSpinner" />
-                    <Spinner fx:id="goodQtySpinner" />
+                    <TextField fx:id="goodWeightField" promptText="Weight (g)" />
+                        <HBox spacing="10">
+                            <Label text="Price of Singular Item: " />
+                            <Spinner fx:id="goodPriceSpinner" />
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Quantity of Item: " />
+                            <Spinner fx:id="goodQtySpinner" />
+                        </HBox>
                     <TextField fx:id="goodPhotoField" promptText="Photo URL" />
                     <ComboBox fx:id="goodTempCombo">
                         <items>
@@ -93,10 +108,13 @@
                             </FXCollections>
                         </items>
                     </ComboBox>
-                    <Button text="Add Good Item" onAction="#handleAddGoodItem"/>
+                    <Button text="Add Good Item" onAction="#handleAddGoodItem" />
                     <Button text="Smart Add Good Item" onAction="#handleSmartAddGoodItem" />
                     <Separator />
-                    <Spinner fx:id="deleteQtySpinner" />
+                        <HBox spacing="10">
+                            <Label text="Quantity to delete: " />
+                            <Spinner fx:id="deleteQtySpinner" />
+                        </HBox>
                     <Button text="Delete Selected Item" onAction="#handleDeleteSelectedGoodItem"/>
                     <Button text="Delete All Items" onAction="#handleDeleteAllGoodItems"/>
                     <ListView fx:id="goodItemList" />
@@ -108,7 +126,7 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <Button text="View All Stock" onAction="#handleViewAllStock"/>
-                    <TextArea fx:id="stockOverviewArea" prefRowCount="20" wrapText="true"/>
+                    <TextArea fx:id="stockOverviewArea" prefRowCount="20" wrapText="true" editable="false"/>
                 </VBox>
             </Tab>
             <Tab text="Search Items" closable="false">
@@ -118,7 +136,7 @@
                     </padding>
                     <TextField fx:id="searchField" promptText="Enter item name"/>
                     <Button text="Search" onAction="#handleSearchGoodItem"/>
-                    <TextArea fx:id="searchResultsArea" prefRowCount="15" wrapText="true"/>
+                    <TextArea fx:id="searchResultsArea" prefRowCount="15" wrapText="true" editable="false"/>
                 </VBox>
             </Tab>
         </TabPane>

@@ -43,7 +43,7 @@ public class MLinkedList<L> implements Serializable { // class MLinkedList that 
         return count;
     }
 
-    // retruves element at the given index
+    // retrieves element at the given index
     public L get(int index) {
         int count = 0;
         Node<L> current = head;

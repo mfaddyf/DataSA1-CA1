@@ -36,7 +36,7 @@ public class SupermarketController {
 
     // -------- goods tab
     @FXML private TextField goodDescField;
-    @FXML private TextField goodSizeField;
+    @FXML private TextField goodWeightField;
     @FXML private Spinner<Double> goodPriceSpinner;
     @FXML private Spinner<Integer> goodQtySpinner;
     @FXML private TextField goodPhotoField;
@@ -61,12 +61,14 @@ public class SupermarketController {
         goodTempCombo.setItems(FXCollections.observableArrayList("Unrefrigerated", "Refrigerated", "Frozen"));
 
         // configure spinners with ranges and defaults
-        aisleLengthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 10));
-        aisleWidthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 5));
-        shelfNumberSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 1));
-        goodPriceSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.01, 1000.0, 1.0, 0.5));
-        goodQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 500, 1));
-        deleteQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 500, 1));
+        // integer : min, max, default
+        // double : min, max, default, step increment
+        aisleLengthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5000, 10));
+        aisleWidthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5000, 5));
+        shelfNumberSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5000, 1));
+        goodPriceSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.01, 5000.0, 1.0, 0.25));
+        goodQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5000, 1));
+        deleteQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5000, 1));
 
         // allow typing into spinners
         aisleLengthSpinner.setEditable(true);
@@ -102,8 +104,12 @@ public class SupermarketController {
         }
     }
 
-
     // -------- aisle handlers
+    /**
+     * handles adding a new aisle to the selected floor area
+     * reads the aisle name, dimensions, temperature
+     * creates an aisle and attaches it to the chosen floor area
+     */
     @FXML
     public void handleAddAisle() {
         String selectedFloor = floorAreaSelector.getValue();
@@ -111,7 +117,7 @@ public class SupermarketController {
         String temp = aisleTempCombo.getValue();
 
         if (selectedFloor != null && name != null && !name.isEmpty() && temp != null) {
-            FloorArea fa = findFloorAreaByTitle(selectedFloor);
+            FloorArea fa = findFloorAreaByName(selectedFloor);
             if (fa != null) {
                 int heightVal = aisleLengthSpinner.getValue();
                 int widthVal  = aisleWidthSpinner.getValue();
@@ -133,6 +139,9 @@ public class SupermarketController {
 
 
     // -------- shelf handlers
+    /**
+     * handles adding a new shelf to the selected aisle
+     */
     @FXML
     public void handleAddShelf() {
         String aisleName = aisleSelector.getValue();
@@ -149,25 +158,30 @@ public class SupermarketController {
     }
 
     // -------- item handlers
+    /**
+     * handles adding a new good item to the selected shelf
+     * reads desc, weight, photo, temperature, price, quantity
+     * creates a good item, adds it to the selected shelf
+     */
     @FXML
     public void handleAddGoodItem() {
         ShelfReference ref = shelfSelector.getValue();
         String desc = goodDescField.getText();
-        String size = goodSizeField.getText();
+        String weight = goodWeightField.getText();
         String photo = goodPhotoField.getText();
         String temp = goodTempCombo.getValue();
 
-        if (ref != null && desc != null && size != null && temp != null) {
+        if (ref != null && desc != null && weight != null && temp != null) {
             Shelf shelf = findShelfByReference(ref.getAisleName(), ref.getShelfNumber());
             if (shelf != null) {
                 double price = goodPriceSpinner.getValue();
                 int qty = goodQtySpinner.getValue();
-                shelf.addGoodItem(new GoodItem(desc, size, price, qty, temp, photo));
+                shelf.addGoodItem(new GoodItem(desc, weight, price, qty, temp, photo));
 
                 refreshAllViews();
 
                 goodDescField.clear();
-                goodSizeField.clear();
+                goodWeightField.clear();
                 goodPhotoField.clear();
                 goodTempCombo.getSelectionModel().clearSelection();
                 goodPriceSpinner.getValueFactory().setValue(1.0);
@@ -176,10 +190,15 @@ public class SupermarketController {
         }
     }
 
+    /**
+     * handles smart adding of good items
+     * uses smartAdd method in supermarket to merge with a matching existing item
+     * or it will place it in a matching aisle
+     */
     @FXML
     public void handleSmartAddGoodItem() {
         String desc = goodDescField.getText();
-        String size = goodSizeField.getText();
+        String size = goodWeightField.getText();
         String photo = goodPhotoField.getText();
         String temp = goodTempCombo.getValue();
 
@@ -191,86 +210,46 @@ public class SupermarketController {
             refreshAllViews();
 
             goodDescField.clear();
-            goodSizeField.clear();
+            goodWeightField.clear();
             goodPhotoField.clear();
             goodTempCombo.getSelectionModel().clearSelection();
             goodPriceSpinner.getValueFactory().setValue(1.0);
             goodQtySpinner.getValueFactory().setValue(1);
         }
     }
+    
 
     // -------- stock overview
+    /**
+     * displays a full breakdown in the overview area
+     */
     @FXML
     public void handleViewAllStock() {
         String report = supermarket.viewAllStockBreakdown();
         stockOverviewArea.setText(report);
     }
 
-    private FloorArea findFloorAreaByTitle(String title) {
-        Node<FloorArea> n = supermarket.getFloorAreas().getHead();
-        while (n != null) {
-            FloorArea fa = n.data;
-            if (fa.getFloorTitle().equalsIgnoreCase(title)) return fa;
-            n = n.next;
-        }
-        return null;
-    }
-
-    private Aisle findAisleByName(String name) {
-        Node<FloorArea> fn = supermarket.getFloorAreas().getHead();
-        while (fn != null) {
-            Node<Aisle> an = fn.data.getAisles().getHead();
-            while (an != null) {
-                Aisle aisle = an.data;
-                if (aisle.getAisleName().equalsIgnoreCase(name)) return aisle;
-                an = an.next;
-            }
-            fn = fn.next;
-        }
-        return null;
-    }
-
-    private Shelf findShelfByReference(String aisleName, int shelfNum) {
-        Node<FloorArea> fn = supermarket.getFloorAreas().getHead();
-        while (fn != null) {
-            Node<Aisle> an = fn.data.getAisles().getHead();
-            while (an != null) {
-                Aisle aisle = an.data;
-                if (aisle.getAisleName().equalsIgnoreCase(aisleName)) {
-                    Node<Shelf> sn = aisle.getShelves().getHead();
-                    while (sn != null) {
-                        Shelf shelf = sn.data;
-                        if (shelf.getShelfNumber() == shelfNum) return shelf;
-                        sn = sn.next;
-                    }
-                }
-                an = an.next;
-            }
-            fn = fn.next;
-        }
-        return null;
-    }
-
-
-    private int countAisles(FloorArea fa) {
-        int c = 0;
-        Node<Aisle> n = fa.getAisles().getHead();
-        while (n != null) { c++; n = n.next; }
-        return c;
-    }
-
     // -------- file operations
+    /**
+     * saves the supermarket state to a file (supermarket.dat)
+     */
     @FXML
     public void handleSaveSupermarket() {
         supermarket.saveToFile("supermarket.dat");
     }
 
+    /**
+     * loads the supermarket state from a file (supermarket.dat)
+     */
     @FXML
     public void handleLoadSupermarket() {
         supermarket = Supermarket.loadFromFile("supermarket.dat");
         refreshAllViews();
     }
 
+    /**
+     * resets the entire supermarket by clearing all the data
+     */
     @FXML
     public void handleResetSupermarket() {
         supermarket.reset();
@@ -278,6 +257,9 @@ public class SupermarketController {
     }
 
     // -------- gui refresh
+    /**
+     * refreshes all the gui views from the currently loaded supermarket model
+     */
     public void refreshAllViews() {
         floorAreaList.getItems().clear();
         floorAreaSelector.getItems().clear();
@@ -323,6 +305,10 @@ public class SupermarketController {
 
 
     // -------- map visualisation
+    /**
+     * displays a visual map of the supermarket
+     * floor areas are headings, aisles are rectangles
+     */
     @FXML
     public void handleShowMap() {
         Stage mapStage = new Stage();
@@ -375,8 +361,10 @@ public class SupermarketController {
         mapStage.show();
     }
 
-
-    // -------- shelf and item pop up windows
+    /**
+     * opens a pop-up window showing the shelves for the aisle that was selected
+     * @param aisle the selected aisle whose shelves are being displayed
+     */
     private void showShelves(Aisle aisle) {
         Stage shelfStage = new Stage();
         javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(8);
@@ -396,7 +384,10 @@ public class SupermarketController {
         shelfStage.show();
     }
 
-
+    /**
+     * opens a pop-up window showing the items for the shelf that was selected
+     * @param shelf the selected shelf whose items are being displayed
+     */
     private void showItems(Shelf shelf) {
         javafx.scene.control.ListView<String> list = new javafx.scene.control.ListView<>();
 
@@ -415,22 +406,29 @@ public class SupermarketController {
 
 
     // -------- searching items
+    /**
+     * handles searching for items by name
+     * displays the search results in the text area
+     */
     @FXML
     public void handleSearchGoodItem() {
         String name = searchField.getText();
         if (name != null && !name.isEmpty()) {
             MLinkedList<SearchResult> results = supermarket.searchGoodItemByName(name);
-            StringBuilder sb = new StringBuilder();
+            String output = "";
             Node<SearchResult> current = results.getHead();
             while (current != null) {
-                sb.append(current.data.toString()).append("\n");
+                output += current.data.toString() + "\n";
                 current = current.next;
             }
-            searchResultsArea.setText(sb.toString());
+            searchResultsArea.setText(output);
         }
     }
 
     // -------- deleting items
+    /**
+     * handles deleting a selected good item from a shelf
+     */
     @FXML
     public void handleDeleteSelectedGoodItem() {
         ShelfReference ref = shelfSelector.getValue();
@@ -440,22 +438,100 @@ public class SupermarketController {
         if (ref != null && selectedItem != null && qty != null && qty > 0) {
             Shelf shelf = findShelfByReference(ref.getAisleName(), ref.getShelfNumber());
             if (shelf != null) {
-                shelf.removeGoodItem(selectedItem.getDescription(), qty); // operates on MLinkedList
+                shelf.removeGoodItem(selectedItem.getDescription(), qty);
                 refreshAllViews();
                 deleteQtySpinner.getValueFactory().setValue(1);
             }
         }
     }
 
+    /**
+     * handles deleting all good items from the selected aisle
+     */
     @FXML
     public void handleDeleteAllGoodItems() {
         ShelfReference ref = shelfSelector.getValue();
         if (ref != null) {
             Shelf shelf = findShelfByReference(ref.getAisleName(), ref.getShelfNumber());
             if (shelf != null) {
-                shelf.getGoodItems().clear(); // your MLinkedList.clear()
+                shelf.getGoodItems().clear();
                 refreshAllViews();
             }
         }
+    }
+
+    // -------- helper methods
+    /**
+     * finds a floor area by its name
+     * @param name the floor area name
+     * @return the matching floor area
+     */
+    private FloorArea findFloorAreaByName(String name) {
+        Node<FloorArea> n = supermarket.getFloorAreas().getHead();
+        while (n != null) {
+            FloorArea fa = n.data;
+            if (fa.getFloorTitle().equalsIgnoreCase(name)) return fa;
+            n = n.next;
+        }
+        return null;
+    }
+
+    /**
+     * finds an aisle by its name
+     * @param name the floor area name
+     * @return the matching aisle
+     */
+    private Aisle findAisleByName(String name) {
+        Node<FloorArea> fn = supermarket.getFloorAreas().getHead();
+        while (fn != null) {
+            Node<Aisle> an = fn.data.getAisles().getHead();
+            while (an != null) {
+                Aisle aisle = an.data;
+                if (aisle.getAisleName().equalsIgnoreCase(name)) return aisle;
+                an = an.next;
+            }
+            fn = fn.next;
+        }
+        return null;
+    }
+
+    /**
+     * finds a shelf by the aisle name and shelf number
+     * @param aisleName the aisle name
+     * @param shelfNum the shelf number
+     * @return the matching shelf, or null if nothing
+     */
+    private Shelf findShelfByReference(String aisleName, int shelfNum) {
+        Node<FloorArea> fn = supermarket.getFloorAreas().getHead();
+        while (fn != null) {
+            Node<Aisle> an = fn.data.getAisles().getHead();
+            while (an != null) {
+                Aisle aisle = an.data;
+                if (aisle.getAisleName().equalsIgnoreCase(aisleName)) {
+                    Node<Shelf> sn = aisle.getShelves().getHead();
+                    while (sn != null) {
+                        Shelf shelf = sn.data;
+                        if (shelf.getShelfNumber() == shelfNum) return shelf;
+                        sn = sn.next;
+                    }
+                }
+                an = an.next;
+            }
+            fn = fn.next;
+        }
+        return null;
+    }
+
+
+    /**
+     * counts the number of aisles in the floor area
+     * @param fa the floor area to count the aisles within
+     * @return the number of aisles
+     */
+    private int countAisles(FloorArea fa) {
+        int c = 0;
+        Node<Aisle> n = fa.getAisles().getHead();
+        while (n != null) { c++; n = n.next; }
+        return c;
     }
 }

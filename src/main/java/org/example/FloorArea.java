@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class FloorArea implements Serializable {
 
     //---
-    //METHODS
+    //FIELDS
     //---
 
     private String floorTitle;
@@ -55,20 +55,20 @@ public class FloorArea implements Serializable {
     //METHODS
     //---
 
+    /**
+     * adds a new aisle to the floor area
+     * the aisle is added to the linked list of aisles beneath this floor area
+     * @param aisle
+     */
     public void addAisle(Aisle aisle) {
         aisles.addElement(aisle);
     }
 
-    public Aisle findAisleByName(String name) {
-        for (int i = 0; i < aisles.size(); i++) {
-            Aisle aisle = aisles.get(i);
-            if (aisle.getAisleName().equalsIgnoreCase(name)) {
-                return aisle;
-            }
-        }
-        return null;
-    }
-
+    /**
+     * calculates the total value of stock in this floor area
+     * loops through each aisle and sums their total values
+     * @return the combined value of the floor area
+     */
     public double getTotalValue() {
         double total = 0.0;
         for (int i = 0; i < aisles.size(); i++) {
@@ -76,6 +76,4 @@ public class FloorArea implements Serializable {
         }
         return total;
     }
-
-
 }

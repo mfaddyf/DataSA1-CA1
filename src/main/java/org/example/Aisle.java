@@ -101,22 +101,6 @@ public class Aisle implements Serializable {
     //---
     //METHODS
     //---
-
-    /**
-     * finds a shelf in this aisle by its shelf number
-     * @param number the shelf number to search for
-     * @return shelf if found, null if nothing
-     */
-    public Shelf findShelfByNumber(int number) {
-        for (int i = 0; i < shelves.size(); i++) {
-            Shelf shelf = shelves.get(i);
-            if (shelf.getShelfNumber() == number) {
-                return shelf;
-            }
-        }
-        return null;
-    }
-
     /**
      * calculates the total of all items stored in the aisle
      * loops through the shelves and adds their totals together

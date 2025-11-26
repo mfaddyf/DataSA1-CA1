@@ -20,6 +20,7 @@ public class SupermarketShop extends Application {
 }
 
 
+
 // REFERENCES FOR WEBSITES I USED TO RESEARCH SOME THINGS
 //  https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/Spinner.html
 //  https://openjfx.io/javadoc/25/javafx.fxml/javafx/fxml/doc-files/introduction_to_fxml.html
